@@ -1,0 +1,63 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: orquestrador-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/orquestrador
+    username: saga
+    password: saga
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      pool-name: orquestrador-pool
+      maximum-pool-size: 10
+      connection-timeout: 5000
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    open-in-view: false
+    hibernate:
+      # o schema é do Flyway; o Hibernate só confere se a entidade bate com ele
+      ddl-auto: validate
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: orquestrador-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        # falhar rápido com o broker fora: o OutboxPublisher segura o lock das linhas enquanto envia
+        max.block.ms: 5000
+        request.timeout.ms: 5000
+        delivery.timeout.ms: 10000
+
+# Um par por participante, com os mesmos nomes do application.yml de cada servico.
+# entrada: o orquestrador PUBLICA o comando | resposta: o orquestrador CONSOME o resultado
+topicos:
+  fraude:
+    entrada: fraude.analisar
+    resposta: fraude.analisado
+  cancelamento:
+    entrada: cancelamento.cancelar
+    resposta: cancelamento.cancelado
+  pix:
+    entrada: pix.depositar
+    resposta: pix.depositado
+
+outbox:
+  intervalo-ms: 1000   # pausa entre uma varredura e a próxima
+  lote: 50             # mensagens por varredura
+
+logging:
+  level:
+    com.exemplo.saga: INFO
+  pattern:
+    # correlationId = sagaId, colocado no MDC no início da saga e na publicação da outbox
+    level: "%5p [%X{correlationId:-}]"

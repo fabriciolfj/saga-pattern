@@ -1,0 +1,26 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: cancelamento-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: cancelamento-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+
+# entrada: onde este servico recebe o comando | resposta: onde publica o resultado
+topicos:
+  entrada: cancelamento.cancelar
+  resposta: cancelamento.cancelado
+
+logging:
+  level:
+    com.exemplo.saga: INFO

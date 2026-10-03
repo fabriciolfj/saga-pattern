@@ -3,6 +3,8 @@ package com.exemplo.saga.orquestrador.domain;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @Getter
 public class Saga {
 
@@ -28,14 +30,26 @@ public class Saga {
         this.etapaAtual = etapaAtual.next();
     }
 
-    public Etapa analyseFraud(final boolean isFraud) {
+    public Etapa analyseFraud(boolean isFraud) {
         requireEtapa(Etapa.FRAUDE);
         this.etapaAtual = etapaAtual.next(isFraud);
-        return etapaAtual;
+        return this.etapaAtual;
     }
 
     public boolean isAwaiting(final Etapa etapa) {
         return status.equals(Status.EXECUTANDO) && etapaAtual.equals(etapa);
+    }
+
+    public String getIdTransacao() {
+        return transacao.transactionId();
+    }
+
+    public String getDocumentCustomer() {
+        return transacao.documentCustomer();
+    }
+
+    public BigDecimal getValue() {
+        return transacao.value();
     }
 
     private void requireEtapa(final Etapa esperada) {

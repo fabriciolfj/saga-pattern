@@ -25,7 +25,6 @@ public class FraudeCommandService {
 
     public void sendCommand(final Saga saga) {
         final ContratoFraude.AnalisarTransacao fraudCommand = toCommando(saga);
-
         outboxService.registrar(UUID.fromString(saga.getId()), topic, fraudCommand);
 
         log.info("fraud command queued sagaId={} topic={}", saga.getId(), topic);

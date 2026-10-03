@@ -9,7 +9,7 @@ public final class FraudeMapper {
 
     public static ContratoFraude.AnalisarTransacao toCommando(final Saga saga) {
         return ContratoFraude.AnalisarTransacao.builder()
-                .transacaoId(saga.getTransacao().transactionId())
+                .transacaoId(saga.getIdTransacao())
                 .documentoCliente(saga.getTransacao().documentCustomer())
                 .valor(saga.getTransacao().value())
                 .build();

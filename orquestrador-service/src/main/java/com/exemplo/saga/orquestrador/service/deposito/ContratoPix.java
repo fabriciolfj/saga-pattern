@@ -1,11 +1,18 @@
 package com.exemplo.saga.orquestrador.service.deposito;
 
-/** Contrato do pix: id e txid e o valor vem em CENTAVOS (long), nao BigDecimal. */
+
+import lombok.Builder;
+
+import java.math.BigDecimal;
+
+
 public final class ContratoPix {
 
-    public record DepositarPix(String txid, String chavePix, long valorCentavos) {
+    @Builder
+    public record DepositarPix(String txid, String chavePix, BigDecimal valorCentavos) {
     }
 
+    @Builder
     public record PixDepositado(String txid, String status, String comprovante) {
     }
 

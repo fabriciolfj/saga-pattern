@@ -1,0 +1,6 @@
+
+  Há duas formas de continuar:
+  1. Conversa nova: diga "continuar do SAGA-CP-01, já implementei" e eu retomo dali.
+  2. Esta mesma conversa, com o histórico completo:
+  claude --resume 2bec0ba3-e70c-4b7a-8e0f-7343063a2b0f
+     Também dá para rodar /resume dentro do Claude Code e escolher esta sessão na lista.

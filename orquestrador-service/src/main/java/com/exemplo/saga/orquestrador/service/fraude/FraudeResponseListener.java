@@ -6,22 +6,21 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.json.JsonMapper;
 
 import static com.exemplo.saga.orquestrador.util.GetHeaderSagaId.HEADER_SAGA_ID;
 import static com.exemplo.saga.orquestrador.util.GetHeaderSagaId.getCorrelation;
+import static com.exemplo.saga.orquestrador.util.JsonMapperUtil.JSON_MAPPER;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class FraudeResponseListener {
 
-    private final JsonMapper jsonMapper;
     private final FraudeRetornoService fraudeRetornoService;
 
     @KafkaListener(topics = "${topicos.fraude.resposta}")
     public void onMessage(final ConsumerRecord<String, String> record) {
-        final var resposta = jsonMapper.readValue(record.value(), ContratoFraude.TransacaoAnalisada.class);
+        final var resposta = JSON_MAPPER.readValue(record.value(), ContratoFraude.TransacaoAnalisada.class);
 
         final var sagaId = getCorrelation(record);
 

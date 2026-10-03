@@ -1,6 +1,7 @@
 package com.exemplo.saga.orquestrador.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -17,10 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Respostas de erro no formato RFC 9457 (application/problem+json). A classe base já trata
- * as exceções do Spring MVC (JSON malformado, método não suportado...) nesse formato.
- */
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -43,6 +41,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn("invalid request fields={}", erros.keySet());
 
         return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    // uk_saga_transaction_id: já existe saga para esse transactionId
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleConflict(final DataIntegrityViolationException ex) {
+        log.warn("data integrity violation: {}", ex.getMostSpecificCause().getMessage());
+
+        final ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, "Já existe uma transação com esse transactionId");
+        problem.setTitle("Transação duplicada");
+        return problem;
     }
 
     @ExceptionHandler(Exception.class)

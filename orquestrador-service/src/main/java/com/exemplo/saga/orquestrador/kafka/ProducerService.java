@@ -14,9 +14,8 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class ProducerService {
 
-    public static final String HEADER_CORRELATION_ID = "correlationId";
+    public static final String HEADER_SAGA_ID = "sagaId";
 
-    // acima do delivery.timeout.ms (10s): quem desiste primeiro é o producer, com o erro real
     private static final long TIMEOUT_SEGUNDOS = 15;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
@@ -25,21 +24,17 @@ public class ProducerService {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    /**
-     * Envio síncrono: a outbox só pode marcar a mensagem como publicada depois do ack do broker.
-     * A key é o correlationId, então as mensagens de uma mesma saga caem na mesma partição, em ordem.
-     */
-    public void send(final String topic, final String key, final String payload, final String correlationId) {
+    public void send(final String topic, final String key, final String payload, final String sagaId) {
         final var record = new ProducerRecord<>(topic, key, payload);
-        record.headers().add(HEADER_CORRELATION_ID, correlationId.getBytes(StandardCharsets.UTF_8));
+        record.headers().add(HEADER_SAGA_ID, sagaId.getBytes(StandardCharsets.UTF_8));
 
         try {
             final var metadata = kafkaTemplate.send(record)
                     .get(TIMEOUT_SEGUNDOS, TimeUnit.SECONDS)
                     .getRecordMetadata();
 
-            log.info("message delivered topic={} partition={} offset={} key={}",
-                    metadata.topic(), metadata.partition(), metadata.offset(), key);
+            log.info("message delivered topic={} partition={} offset={} sagaId={}",
+                    metadata.topic(), metadata.partition(), metadata.offset(), sagaId);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PublicacaoKafkaException(topic, e);

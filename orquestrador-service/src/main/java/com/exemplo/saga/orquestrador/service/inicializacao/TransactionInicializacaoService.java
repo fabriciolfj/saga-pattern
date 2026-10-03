@@ -23,6 +23,8 @@ public class TransactionInicializacaoService {
     @Transactional
     public Saga execute(final Transacao transacao) {
         final var saga = SagaInicializacaoMapper.toDomain(transacao, jsonMapper.writeValueAsString(transacao));
+        // o comando de fraude sai neste mesmo commit: a saga já nasce aguardando a fraude
+        saga.startFraudAnalysis();
 
         try (var ignored = MDC.putCloseable("correlationId", saga.getId())) {
             log.info("saga started sagaId={} transactionId={} etapa={} status={}",

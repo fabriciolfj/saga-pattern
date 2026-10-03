@@ -26,4 +26,12 @@ public enum Etapa {
             throw new IllegalArgumentException("this step " + this.name() + " is last");
         }
     };
+
+    public Etapa next() {
+        throw new IllegalStateException("step " + name() + " needs the fraud result to advance");
+    }
+
+    public Etapa next(final boolean isFraude) {
+        throw new IllegalStateException("step " + name() + " does not depend on the fraud result");
+    }
 }

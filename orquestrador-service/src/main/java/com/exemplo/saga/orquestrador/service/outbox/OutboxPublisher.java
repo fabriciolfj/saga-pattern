@@ -33,7 +33,7 @@ public class OutboxPublisher {
             return;
         }
 
-        log.debug("publishing {} outbox messages", pendentes.size());
+        log.info("publishing {} outbox messages", pendentes.size());
 
         for (final OutboxEntity mensagem : pendentes) {
             if (!publicar(mensagem)) {

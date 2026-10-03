@@ -36,6 +36,9 @@ public class SagaInstanceEntity {
     @Column(name = "saga_id", nullable = false, updatable = false)
     private UUID sagaId;
 
+    @Column(name = "transaction_id", nullable = false, updatable = false, unique = true, length = 100)
+    private String transactionId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "etapa", nullable = false, length = 40)
     private Etapa etapa;

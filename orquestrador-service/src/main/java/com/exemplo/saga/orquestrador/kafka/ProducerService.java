@@ -14,8 +14,6 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class ProducerService {
 
-    public static final String HEADER_SAGA_ID = "sagaId";
-
     private static final long TIMEOUT_SEGUNDOS = 15;
 
     private final KafkaTemplate<String, String> kafkaTemplate;

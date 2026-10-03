@@ -8,9 +8,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.nio.charset.StandardCharsets;
-
-import static com.exemplo.saga.orquestrador.kafka.ProducerService.HEADER_SAGA_ID;
+import static com.exemplo.saga.orquestrador.util.GetHeaderSagaId.HEADER_SAGA_ID;
+import static com.exemplo.saga.orquestrador.util.GetHeaderSagaId.getCorrelation;
 
 @Slf4j
 @Component
@@ -23,7 +22,8 @@ public class FraudeResponseListener {
     @KafkaListener(topics = "${topicos.fraude.resposta}")
     public void onMessage(final ConsumerRecord<String, String> record) {
         final var resposta = jsonMapper.readValue(record.value(), ContratoFraude.TransacaoAnalisada.class);
-        final var sagaId = sagaIdDoHeader(record);
+
+        final var sagaId = getCorrelation(record);
 
         try (var ignored = MDC.putCloseable("correlationId", sagaId)) {
             if (sagaId == null) {
@@ -37,10 +37,5 @@ public class FraudeResponseListener {
 
             fraudeRetornoService.processFraudeRetorno(sagaId, resposta);
         }
-    }
-
-    private static String sagaIdDoHeader(final ConsumerRecord<String, String> record) {
-        final var header = record.headers().lastHeader(HEADER_SAGA_ID);
-        return header == null ? null : new String(header.value(), StandardCharsets.UTF_8);
     }
 }

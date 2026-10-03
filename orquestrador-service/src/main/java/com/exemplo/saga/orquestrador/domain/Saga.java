@@ -35,7 +35,7 @@ public class Saga {
     }
 
     public boolean isAwaiting(final Etapa etapa) {
-        return status == Status.EXECUTANDO && etapaAtual == etapa;
+        return status.equals(Status.EXECUTANDO) && etapaAtual.equals(etapa);
     }
 
     private void requireEtapa(final Etapa esperada) {

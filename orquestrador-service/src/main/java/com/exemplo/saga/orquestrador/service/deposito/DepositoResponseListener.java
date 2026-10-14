@@ -20,7 +20,7 @@ public class DepositoResponseListener {
         var resposta = JSON_MAPPER.readValue(record.value(), ContratoPix.PixDepositado.class);
 
         var sagaId = GetHeaderSagaId.getCorrelation(record);
-        try(var ignored = MDC.putCloseable("correlationId" , GetHeaderSagaId.getCorrelation(record))) {
+        try(var ignored = MDC.putCloseable("correlationId" , sagaId)) {
             if (sagaId == null) {
                 log.warn("deposit response without {} header transactionId={} partition={} offset={}",
                         HEADER_SAGA_ID, resposta.txid(), record.partition(), record.offset());

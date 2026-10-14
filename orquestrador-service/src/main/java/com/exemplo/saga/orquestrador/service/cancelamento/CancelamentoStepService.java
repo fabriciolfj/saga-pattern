@@ -28,9 +28,8 @@ public class CancelamentoStepService implements StepEndService {
     @Override
     public void execute(final Saga saga) {
         final var cancelarTransacao = CancelamentoMapper.toCancelarTransacao(saga);
-        final String json = JSON_MAPPER.writeValueAsString(cancelarTransacao);
 
-        outboxService.registrar(UUID.fromString(saga.getId()), topic, json);
+        outboxService.registrar(UUID.fromString(saga.getId()), topic, cancelarTransacao);
         log.info("registred outbox cancel saga {}", saga.getId());
     }
 }

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tools.jackson.databind.json.JsonMapper;
 
+import static com.exemplo.saga.orquestrador.service.inicializacao.SagaInicializacaoMapper.toDomain;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,8 +24,7 @@ public class TransactionInicializacaoService {
 
     @Transactional
     public Saga execute(final Transacao transacao) {
-        final var saga = SagaInicializacaoMapper.toDomain(transacao, jsonMapper.writeValueAsString(transacao));
-        // o comando de fraude sai neste mesmo commit: a saga já nasce aguardando a fraude
+        final var saga = toDomain(transacao, jsonMapper.writeValueAsString(transacao));
         saga.startFraudAnalysis();
 
         try (var ignored = MDC.putCloseable("correlationId", saga.getId())) {

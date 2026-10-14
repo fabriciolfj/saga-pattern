@@ -11,21 +11,25 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.util.UUID;
 
+import static com.exemplo.saga.orquestrador.util.JsonMapperUtil.JSON_MAPPER;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OutboxService {
 
     private final OutboxRepository outboxRepository;
-    private final JsonMapper jsonMapper;
+
+
 
     @Transactional(propagation = Propagation.MANDATORY)
     public void registrar(final UUID correlationId, final String topico, final Object mensagem) {
+        final String json = JSON_MAPPER.writeValueAsString(mensagem);
         final var outbox = OutboxEntity.builder()
                 .id(UUID.randomUUID())
                 .correlationId(correlationId)
                 .topico(topico)
-                .payload(jsonMapper.writeValueAsString(mensagem))
+                .payload(json)
                 .build();
 
         outboxRepository.save(outbox);

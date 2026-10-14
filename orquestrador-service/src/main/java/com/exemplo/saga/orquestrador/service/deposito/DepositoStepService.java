@@ -30,9 +30,8 @@ public class DepositoStepService implements StepEndService {
     @Override
     public void execute(final Saga saga) {
         final ContratoPix.DepositarPix depositarPix = DepositMapper.toDepositarPix(saga);
-        final String json = JSON_MAPPER.writeValueAsString(depositarPix);
 
-        outboxService.registrar(UUID.fromString(saga.getId()), topic, json);
+        outboxService.registrar(UUID.fromString(saga.getId()), topic, depositarPix);
         log.info("registred outbox deposit saga {}", saga.getId());
     }
 }

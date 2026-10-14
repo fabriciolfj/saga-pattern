@@ -44,6 +44,11 @@ public class Saga {
         return transacao.transactionId();
     }
 
+    public void doneStepCancel() {
+        this.status = Status.ABORTADA;
+        return;
+    }
+
     public String getDocumentCustomer() {
         return transacao.documentCustomer();
     }

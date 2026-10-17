@@ -1,7 +1,7 @@
 CREATE TABLE saga_instance (
     saga_id    uuid        PRIMARY KEY,
     etapa      varchar(40) NOT NULL,
-    status     varchar(20) NOT NULL,   -- EXECUTANDO | CONCLUIDA | ABORTADA
+    status     varchar(20) NOT NULL,
     dados      jsonb       NOT NULL,
     version    int         NOT NULL DEFAULT 0,
     created_at timestamptz NOT NULL DEFAULT now(),

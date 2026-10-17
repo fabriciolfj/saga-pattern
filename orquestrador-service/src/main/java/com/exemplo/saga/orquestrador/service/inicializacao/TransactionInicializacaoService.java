@@ -25,7 +25,6 @@ public class TransactionInicializacaoService {
     @Transactional
     public Saga execute(final Transacao transacao) {
         final var saga = toDomain(transacao, jsonMapper.writeValueAsString(transacao));
-        saga.startFraudAnalysis();
 
         try (var ignored = MDC.putCloseable("correlationId", saga.getId())) {
             log.info("saga started sagaId={} transactionId={} etapa={} status={}",

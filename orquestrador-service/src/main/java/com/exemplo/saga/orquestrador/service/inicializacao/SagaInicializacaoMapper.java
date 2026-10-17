@@ -14,7 +14,7 @@ public final class SagaInicializacaoMapper {
         return Saga.builder()
                 .id(UUID.randomUUID().toString())
                 .status(Status.EXECUTANDO)
-                .etapaAtual(Etapa.INICIALIZACAO)
+                .etapaAtual(Etapa.FRAUDE)
                 .payload(payload)
                 .transacao(transacao)
                 .build();

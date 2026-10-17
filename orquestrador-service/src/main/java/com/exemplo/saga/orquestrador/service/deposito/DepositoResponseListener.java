@@ -1,6 +1,7 @@
 package com.exemplo.saga.orquestrador.service.deposito;
 
 import com.exemplo.saga.orquestrador.util.GetHeaderSagaId;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
@@ -13,7 +14,10 @@ import static com.exemplo.saga.orquestrador.util.JsonMapperUtil.JSON_MAPPER;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class DepositoResponseListener {
+
+    private final DepositoResponseService depositoResponseService;
 
     @KafkaListener(topics = "${topicos.pix.resposta}")
     public void receive(final ConsumerRecord<String, String> record) {
@@ -28,6 +32,8 @@ public class DepositoResponseListener {
 
             log.info("deposit response received sagaId={} transactionId={} partition={} offset={}",
                     sagaId, resposta.txid(), record.partition(), record.offset());
+
+            depositoResponseService.execute(sagaId, resposta);
         }
 
     }

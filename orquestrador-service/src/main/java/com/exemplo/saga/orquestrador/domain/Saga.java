@@ -25,11 +25,6 @@ public class Saga {
         this.version = version;
     }
 
-    public void startFraudAnalysis() {
-        requireEtapa(Etapa.INICIALIZACAO);
-        this.etapaAtual = etapaAtual.next();
-    }
-
     public Etapa analyseFraud(boolean isFraud) {
         requireEtapa(Etapa.FRAUDE);
         this.etapaAtual = etapaAtual.next(isFraud);
@@ -46,7 +41,10 @@ public class Saga {
 
     public void doneStepCancel() {
         this.status = Status.ABORTADA;
-        return;
+    }
+
+    public void doneStepDeposit() {
+        this.status = Status.CONCLUIDA;
     }
 
     public String getDocumentCustomer() {

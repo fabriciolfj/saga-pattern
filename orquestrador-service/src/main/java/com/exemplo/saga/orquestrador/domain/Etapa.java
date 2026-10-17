@@ -9,12 +9,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum Etapa {
 
-    INICIALIZACAO(Constants.DESC_INICILIZACAO) {
-        public Etapa next() {
-            return FRAUDE;
-        }
-    },
-
     FRAUDE(Constants.DESC_FRAUDE) {
         public Etapa next(boolean isFraude) {
             return isFraude ? CANCELAMENTO : DEPOSITO;

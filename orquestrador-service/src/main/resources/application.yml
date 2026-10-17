@@ -19,7 +19,6 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      # o schema é do Flyway; o Hibernate só confere se a entidade bate com ele
       ddl-auto: validate
   kafka:
     bootstrap-servers: localhost:9092

@@ -9,12 +9,6 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-/**
- * Cancelamento: recebe e cancela. Nao decide nada.
- *
- * CONTRATO PROPRIO - aqui o identificador se chama "codigoTransacao", nao
- * "transacaoId". O orquestrador que faca a traducao.
- */
 @Component
 public class CancelamentoListener {
 

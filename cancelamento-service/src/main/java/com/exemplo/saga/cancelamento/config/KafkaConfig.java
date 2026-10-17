@@ -7,13 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
 
-/**
- * Cria os dois topicos deste servico na subida, para nao depender do
- * auto-create do broker nem da ordem em que os servicos sobem.
- *
- * Produtor, consumidor e KafkaTemplate<String, String> vem da autoconfiguracao
- * do Spring Boot, a partir de spring.kafka.* no application.yml.
- */
+
 @Configuration
 @EnableConfigurationProperties(TopicosProperties.class)
 public class KafkaConfig {
